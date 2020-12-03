@@ -17,6 +17,7 @@ class TweetController extends AbstractController
     {
         $tweet = new Tweet();
         $form = $this->createForm(TweetType::class, $tweet);
+        
         return $this->render('tweet/index.html.twig', [
             'form' => $form->createView(),
         ]);
