@@ -30,17 +30,22 @@ class Tweet
     /**
      * @ORM\Column(type="boolean")
      */
-    private $moderated;
+    private $moderated = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $markedAsFake;
+    private $markedAsFake = false;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $tweetId;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
