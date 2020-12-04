@@ -25,7 +25,7 @@ class TweetController extends AbstractController
             $em->persist($tweet);
             $em->flush();
 
-            $this->addFlash('success', 'Le tweet a bien envoyé ! : <em>' . $tweet->getContent() . '</em>')
+            $this->addFlash('success', 'Le tweet a bien envoyé ! : <em>' . $tweet->getContent() . '</em>');
 
             return $this->redirectToRoute('tweet_suggest_form');
         }
