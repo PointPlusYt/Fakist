@@ -11,4 +11,20 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col">
+        <div class="row">
+        {% for tweet in tweets %}
+            {# TODO: Problème avec les marges #}
+            <div class="card border-{{ cycle(['primary', 'secondary'], loop.index0) }} mb-3 col-4">
+                <div class="card-header">{{ tweet.createdAt|date('d M Y à H\\hi') }}</div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ tweet.content }}</h4>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

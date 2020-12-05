@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Tweet;
 use App\Form\TweetType;
+use App\Repository\TweetRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,7 @@ class TweetController extends AbstractController
     /**
      * @Route("/", name="tweet_suggest_form")
      */
-    public function suggestForm(Request $request): Response
+    public function suggestForm(Request $request, TweetRepository $tweetRepository): Response
     {
         $tweet = new Tweet();
         $form = $this->createForm(TweetType::class, $tweet);
@@ -32,6 +33,7 @@ class TweetController extends AbstractController
 
         return $this->render('tweet/index.html.twig', [
             'form' => $form->createView(),
+            'tweets' => $tweetRepository->findAll(),
         ]);
     }
 }
