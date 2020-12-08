@@ -2,7 +2,9 @@
 
 {% block body %}
 
-{% include "security/login_form.html.twig" %}
+{% if app.user is null %}
+    {% include "security/login_form.html.twig" %}
+{% endif %}
 
 <div class="row my-5">
     <div class="col">
@@ -14,7 +16,19 @@
 </div>
 
 <div class="card-columns">
-    {% for tweet in tweets %}
+    {% for tweet in unsafeTweets %}
+        <div class="card border-{{ cycle(['primary', 'secondary'], loop.index0) }} mb-3">
+            <div class="card-header">{{ tweet.createdAt|date('d M Y à H\\hi') }}</div>
+            <div class="card-body">
+                <h4 class="card-title">{{ tweet.content }}</h4>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+<div class="card-columns">
+    {% for tweet in safeTweets %}
         <div class="card border-{{ cycle(['primary', 'secondary'], loop.index0) }} mb-3">
             <div class="card-header">{{ tweet.createdAt|date('d M Y à H\\hi') }}</div>
             <div class="card-body">

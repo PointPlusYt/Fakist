@@ -31,9 +31,16 @@ class TweetController extends AbstractController
             return $this->redirectToRoute('tweet_suggest_form');
         }
 
+        if ($this->getUser()) {
+            $unsafeTweets = $tweetRepository->findBy(['moderated' => false]);
+        } else {
+            $unsafeTweets = [];
+        }
+
         return $this->render('tweet/index.html.twig', [
             'form' => $form->createView(),
-            'tweets' => $tweetRepository->findAll(),
+            'safeTweets' => $tweetRepository->findBy(['moderated' => true]),
+            'unsafeTweets' => $unsafeTweets,
         ]);
     }
 }
