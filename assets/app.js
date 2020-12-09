@@ -12,3 +12,5 @@
 import './bootstrap';
 
 import 'bootswatch/dist/minty/bootstrap.min.css';
+
+require('bootstrap');
