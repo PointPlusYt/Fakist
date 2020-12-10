@@ -19,6 +19,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "bootswatch": "^4.5.3"
+        "bootswatch": "^4.5.3",
+        "fork-awesome": "^1.1.7"
     }
 }

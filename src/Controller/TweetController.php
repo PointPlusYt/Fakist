@@ -10,10 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route(name="tweet_")
+ */
 class TweetController extends AbstractController
 {
     /**
-     * @Route("/", name="tweet_suggest_form")
+     * @Route("/", name="suggest_form")
      */
     public function suggestForm(Request $request, TweetRepository $tweetRepository): Response
     {
@@ -43,4 +46,17 @@ class TweetController extends AbstractController
             'unsafeTweets' => $unsafeTweets,
         ]);
     }
+
+    /**
+     * @Route("/moderate/{id}", name="moderate")
+     */
+    public function moderate(Tweet $tweet)
+    {
+        $tweet->setModerated(true);
+        $this->getDoctrine()->getManager()->flush();
+        // TODO: On prend le tweet et on l'envoie sur Twitter
+
+        return $this->redirectToRoute('tweet_suggest_form');
+    }
+
 }

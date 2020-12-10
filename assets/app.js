@@ -12,5 +12,6 @@
 import './bootstrap';
 
 import 'bootswatch/dist/minty/bootstrap.min.css';
+import 'fork-awesome/css/fork-awesome.min.css';
 
 require('bootstrap');
