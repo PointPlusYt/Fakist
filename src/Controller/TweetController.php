@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Entity\Tweet;
 use App\Form\TweetType;
 use App\Repository\TweetRepository;
@@ -57,6 +58,19 @@ class TweetController extends AbstractController
         // TODO: On prend le tweet et on l'envoie sur Twitter
 
         return $this->redirectToRoute('tweet_suggest_form');
+    }
+
+    /**
+     * @Route("/twitter", name="twitest")
+     */
+    public function twitest()
+    {
+        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
+        $request_token = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
+        dump($connection, $request_token);
+        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET'], $request_token['oauth_token'], $request_token['oauth_token_secret']);
+        $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
+        dd($connection, $url);
     }
 
 }
