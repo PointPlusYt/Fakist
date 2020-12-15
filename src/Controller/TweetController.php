@@ -61,16 +61,29 @@ class TweetController extends AbstractController
     }
 
     /**
-     * @Route("/twitter", name="twitest")
+     * @Route("/twitter-connect", name="oauth_connect")
      */
-    public function twitest()
+    public function oauthConnect()
     {
         $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
-        $request_token = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
-        dump($connection, $request_token);
-        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET'], $request_token['oauth_token'], $request_token['oauth_token_secret']);
+        $request_token = $connection->oauth('oauth/request_token', ['callback_url' => 'http://127.0.0.1:8000/twitter-done']);
+        $connection->setOauthToken($request_token['oauth_token'], $request_token['oauth_token_secret']);
         $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
-        dd($connection, $url);
+        return $this->redirect($url);
     }
 
+    /**
+     * @Route("/twitter-done", name="oauth_done")
+     */
+    public function oauthDone(Request $request)
+    {
+        $token = $request->query->get('oauth_token');
+        $verifier = $request->query->get('oauth_verifier');
+        
+        $session = $request->getSession();
+        $session->set('oauth_token', $token);
+        $session->set('oauth_verifier', $verifier);
+        
+        dd($request->getSession());
+    }
 }
