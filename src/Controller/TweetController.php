@@ -80,10 +80,25 @@ class TweetController extends AbstractController
         $token = $request->query->get('oauth_token');
         $verifier = $request->query->get('oauth_verifier');
         
-        $session = $request->getSession();
-        $session->set('oauth_token', $token);
-        $session->set('oauth_verifier', $verifier);
+        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
+        $access_token = $connection->oauth("oauth/access_token", ['oauth_token' => $token ,"oauth_verifier" => $verifier]);
+
+        $request->getSession()->set('access_token', $access_token);
         
-        dd($request->getSession());
+        return $this->redirectToRoute('tweet_suggest_form');
+    }
+
+    /**
+     * @Route("/send", name="send")
+     */
+    public function send(Request $request)
+    {
+        $access_token = $request->getSession()->get('access_token');
+        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET'], $access_token['oauth_token'], $access_token['oauth_token_secret']);
+        $connection->post("statuses/update", ["status" => "hello world"]);
+
+        dump($connection);
+
+        return $this->json('Joyeux Noël');
     }
 }
