@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Entity\Tweet;
 use App\Form\TweetType;
 use App\Repository\TweetRepository;
@@ -58,47 +57,5 @@ class TweetController extends AbstractController
         // TODO: On prend le tweet et on l'envoie sur Twitter
 
         return $this->redirectToRoute('tweet_suggest_form');
-    }
-
-    /**
-     * @Route("/twitter-connect", name="oauth_connect")
-     */
-    public function oauthConnect()
-    {
-        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
-        $request_token = $connection->oauth('oauth/request_token', ['callback_url' => 'http://127.0.0.1:8000/twitter-done']);
-        $connection->setOauthToken($request_token['oauth_token'], $request_token['oauth_token_secret']);
-        $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
-        return $this->redirect($url);
-    }
-
-    /**
-     * @Route("/twitter-done", name="oauth_done")
-     */
-    public function oauthDone(Request $request)
-    {
-        $token = $request->query->get('oauth_token');
-        $verifier = $request->query->get('oauth_verifier');
-        
-        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
-        $access_token = $connection->oauth("oauth/access_token", ['oauth_token' => $token ,"oauth_verifier" => $verifier]);
-
-        $request->getSession()->set('access_token', $access_token);
-        
-        return $this->redirectToRoute('tweet_suggest_form');
-    }
-
-    /**
-     * @Route("/send", name="send")
-     */
-    public function send(Request $request)
-    {
-        $access_token = $request->getSession()->get('access_token');
-        $connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET'], $access_token['oauth_token'], $access_token['oauth_token_secret']);
-        $connection->post("statuses/update", ["status" => "hello world"]);
-
-        dump($connection);
-
-        return $this->json('Joyeux Noël');
     }
 }
