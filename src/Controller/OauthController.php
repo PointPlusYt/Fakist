@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Service\TwitterApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OauthController extends AbstractController
@@ -22,9 +21,9 @@ class OauthController extends AbstractController
     /**
      * @Route("/twitter-done", name="oauth_done")
      */
-    public function oauthDone(Request $request, TwitterApi $twitterApi)
+    public function oauthDone(TwitterApi $twitterApi)
     {
-        $twitterApi->setAcccessTokenInSession($request);
+        $twitterApi->setAcccessTokenInSession();
         
         return $this->redirectToRoute('tweet_suggest_form');
     }
@@ -32,9 +31,9 @@ class OauthController extends AbstractController
     /**
      * @Route("/send", name="send")
      */
-    public function send(Request $request, TwitterApi $twitterApi)
+    public function send(TwitterApi $twitterApi)
     {
-        $twitterApi->sendTweet('Hello world !');
+        dump($twitterApi->sendTweet('The election is a fraud.'));
 
         return $this->json('Joyeux Noël');
     }
