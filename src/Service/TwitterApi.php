@@ -4,24 +4,29 @@ namespace App\Service;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TwitterApi
 {
     private $connection;
     private $request;
+    private $router;
     private $session;
 
-    public function __construct(Request $request, SessionInterface $session)
+    public function __construct(RequestStack $requestStack, SessionInterface $session, UrlGeneratorInterface $router)
     {
         $this->connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
+        $this->router = $router;
         $this->session = $session;
     }
 
     public function getAuthorizationRequestUrl()
     {
-        $request_token = $this->connection->oauth('oauth/request_token', ['callback_url' => 'http://127.0.0.1:8000/twitter-done']);
+        $callbackUrl = $this->router->generate('oauth_confirm', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $request_token = $this->connection->oauth('oauth/request_token', ['callback_url' => $callbackUrl]);
         $this->connection->setOauthToken($request_token['oauth_token'], $request_token['oauth_token_secret']);
         $url = $this->connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
         return $url;

@@ -9,32 +9,30 @@ use Symfony\Component\Routing\Annotation\Route;
 class OauthController extends AbstractController
 {
     /**
-     * @Route("/twitter-connect", name="oauth_connect")
+     * @Route("/oauth-connect", name="oauth_connect")
      */
     public function connect(TwitterApi $twitterApi)
     {
-        $twitterApi->getAuthorizationRequestUrl();
-
-        return $this->redirect($url);
+        return $this->redirect($twitterApi->getAuthorizationRequestUrl());
     }
 
     /**
-     * @Route("/twitter-done", name="oauth_done")
+     * @Route("/oauth-confirm", name="oauth_confirm")
      */
-    public function oauthDone(TwitterApi $twitterApi)
+    public function oauthConfirm(TwitterApi $twitterApi)
     {
-        $twitterApi->setAcccessTokenInSession();
+        $twitterApi->setAccessTokenInSession();
         
         return $this->redirectToRoute('tweet_suggest_form');
     }
 
-    /**
-     * @Route("/send", name="send")
-     */
-    public function send(TwitterApi $twitterApi)
-    {
-        dump($twitterApi->sendTweet('The election is a fraud.'));
+    // /**
+    //  * @Route("/send", name="send")
+    //  */
+    // public function send(TwitterApi $twitterApi)
+    // {
+    //     dump($twitterApi->sendTweet('The election is a fraud.'));
 
-        return $this->json('Joyeux Noël');
-    }
+    //     return $this->json('Joyeux Noël');
+    // }
 }
