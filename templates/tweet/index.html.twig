@@ -2,15 +2,11 @@
 
 {% block body %}
 
-{% if app.user is null %}
-    {% include "security/login_form.html.twig" %}
-{% endif %}
-
 <div class="row my-5">
     <div class="col">
         {{ form_start(form) }}
             {{ form_widget(form.content) }}
-            <button class="btn btn-primary mt-3">Proposer un tweet</button>
+            <button class="btn btn-secondary mt-3">Proposer un tweet</button>
         {{ form_end(form) }}
     </div>
 </div>
