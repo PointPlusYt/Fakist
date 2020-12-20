@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-	<a class="navbar-brand" href="#">Fakist</a>
+	<a class="navbar-brand" href="{{ path('tweet_suggest_form') }}">Fakist</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
@@ -21,6 +21,13 @@
 						</form>
 					</div>
 				</li>
+			{% else %}
+				{% if app.session.get('access_token') is null %}
+					<li class="nav-item">
+					<a class="nav-link" href="{{ path('oauth_connect') }}">
+						Connecter Twitter</a>
+					</li>
+				{% endif %}
 			{% endif %}
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Présentation</a>

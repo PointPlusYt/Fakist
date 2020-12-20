@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tweet;
 use App\Form\TweetType;
 use App\Repository\TweetRepository;
+use App\Service\TwitterApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,11 +51,14 @@ class TweetController extends AbstractController
     /**
      * @Route("/moderate/accept/{id}", name="moderate_accept")
      */
-    public function moderateAccept(Tweet $tweet)
+    public function moderateAccept(Tweet $tweet, TwitterApi $twitterApi)
     {
         $tweet->setModerated(Tweet::ACCEPTED);
+        $sentTweet = $twitterApi->sendTweet($tweet->getContent());
+        dump($sentTweet);
+        $tweet->setTweetId($sentTweet->id_str);
+
         $this->getDoctrine()->getManager()->flush();
-        // TODO: On prend le tweet et on l'envoie sur Twitter
 
         return $this->redirectToRoute('tweet_suggest_form');
     }
