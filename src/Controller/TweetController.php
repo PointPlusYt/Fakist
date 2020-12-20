@@ -35,27 +35,38 @@ class TweetController extends AbstractController
         }
 
         if ($this->getUser()) {
-            $unsafeTweets = $tweetRepository->findBy(['moderated' => false]);
+            $unsafeTweets = $tweetRepository->findBy(['moderated' => Tweet::NOT_MODERATED]);
         } else {
             $unsafeTweets = [];
         }
 
         return $this->render('tweet/index.html.twig', [
             'form' => $form->createView(),
-            'safeTweets' => $tweetRepository->findBy(['moderated' => true]),
+            'safeTweets' => $tweetRepository->findBy(['moderated' => Tweet::ACCEPTED]),
             'unsafeTweets' => $unsafeTweets,
         ]);
     }
 
     /**
-     * @Route("/moderate/{id}", name="moderate")
+     * @Route("/moderate/accept/{id}", name="moderate_accept")
      */
-    public function moderate(Tweet $tweet)
+    public function moderateAccept(Tweet $tweet)
     {
-        $tweet->setModerated(true);
+        $tweet->setModerated(Tweet::ACCEPTED);
         $this->getDoctrine()->getManager()->flush();
         // TODO: On prend le tweet et on l'envoie sur Twitter
 
+        return $this->redirectToRoute('tweet_suggest_form');
+    }
+
+    /**
+     * @Route("/moderate/refuse/{id}", name="moderate_refuse")
+     */
+    public function moderateRefuse(Tweet $tweet)
+    {
+        $tweet->setModerated(Tweet::REJECTED);
+        $this->getDoctrine()->getManager()->flush();
+       
         return $this->redirectToRoute('tweet_suggest_form');
     }
 }

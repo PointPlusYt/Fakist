@@ -10,6 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tweet
 {
+    const NOT_MODERATED = 0;
+    const ACCEPTED = 1;
+    const REJECTED = 2;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -28,9 +32,9 @@ class Tweet
     private $createdAt;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="smallint", options={"default": 0})
      */
-    private $moderated = false;
+    private $moderated = self::NOT_MODERATED;
 
     /**
      * @ORM\Column(type="boolean")
@@ -76,12 +80,12 @@ class Tweet
         return $this;
     }
 
-    public function getModerated(): ?bool
+    public function getModerated(): ?int
     {
         return $this->moderated;
     }
 
-    public function setModerated(bool $moderated): self
+    public function setModerated(int $moderated): self
     {
         $this->moderated = $moderated;
 

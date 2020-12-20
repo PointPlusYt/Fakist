@@ -16,7 +16,10 @@
         <div class="card border-{{ cycle(['primary', 'secondary'], loop.index0) }} mb-3">
             <div class="card-header d-flex justify-content-between">
                 <span>{{ tweet.createdAt|date('d M Y à H\\hi') }}</span>
-                <a href="{{ path('tweet_moderate', {id: tweet.id}) }}"><i class="fa fa-check-square-o" aria-hidden="true"></i></a>
+                <span>
+                    <a href="{{ path('tweet_moderate_accept', {id: tweet.id}) }}"><i class="fa fa-check-square-o" aria-hidden="true"></i></a>
+                    <a href="{{ path('tweet_moderate_refuse', {id: tweet.id}) }}"><i class="fa fa-dev-to" aria-hidden="true"></i></a>
+                </span>
             </div>
             <div class="card-body">
                 <h4 class="card-title">{{ tweet.content }}</h4>

@@ -2,7 +2,7 @@ App\Entity\Tweet:
     tweet_{1..140}:
         content: '<sentence()>'
         createdAt: '<datetime()>'
-        moderated: '<boolean()>'
+        moderated: '<numberBetween(0,2)>'
         markedAsFake: '<boolean()>'
 
 App\Entity\User:
