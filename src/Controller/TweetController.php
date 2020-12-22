@@ -51,13 +51,9 @@ class TweetController extends AbstractController
     /**
      * @Route("/moderate/accept/{id}", name="moderate_accept")
      */
-    public function moderateAccept(Tweet $tweet, TwitterApi $twitterApi)
+    public function moderateAccept(Tweet $tweet)
     {
         $tweet->setModerated(Tweet::ACCEPTED);
-        $sentTweet = $twitterApi->sendTweet($tweet->getContent());
-        dump($sentTweet);
-        $tweet->setTweetId($sentTweet->id_str);
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('tweet_suggest_form');

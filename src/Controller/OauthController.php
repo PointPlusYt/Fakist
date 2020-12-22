@@ -21,18 +21,8 @@ class OauthController extends AbstractController
      */
     public function oauthConfirm(TwitterApi $twitterApi)
     {
-        $twitterApi->setAccessTokenInSession();
+        $twitterApi->storeAccessToken();
         
         return $this->redirectToRoute('tweet_suggest_form');
     }
-
-    // /**
-    //  * @Route("/send", name="send")
-    //  */
-    // public function send(TwitterApi $twitterApi)
-    // {
-    //     dump($twitterApi->sendTweet('The election is a fraud.'));
-
-    //     return $this->json('Joyeux Noël');
-    // }
 }

@@ -14,6 +14,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // On redirige sauvagement sur la page d'accueil pour respecter la contrainte d'avoir qu'une seul page pour tout le projet
+        // En fait le code après le return est complètement ignoré
+        return $this->redirectToRoute('tweet_suggest_form');
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }

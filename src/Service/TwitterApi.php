@@ -3,23 +3,36 @@
 namespace App\Service;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Security;
 
 class TwitterApi
 {
     private $connection;
+    private $em;
     private $request;
     private $router;
+    private $security; 
     private $session;
 
-    public function __construct(RequestStack $requestStack, SessionInterface $session, UrlGeneratorInterface $router)
+    public function __construct(
+        EntityManagerInterface $em,
+        RequestStack $requestStack,
+        Security $security,
+        SessionInterface $session,
+        UrlGeneratorInterface $router
+        )
     {
         $this->connection = new TwitterOAuth($_ENV['TWITTER_API_KEY'], $_ENV['TWITTER_API_SECRET']);
+        $this->em = $em;
         $this->request = $requestStack->getCurrentRequest();
         $this->router = $router;
+        $this->security = $security;
         $this->session = $session;
     }
 
@@ -32,14 +45,18 @@ class TwitterApi
         return $url;
     }
 
-    public function setAccessTokenInSession()
+    public function storeAccessToken()
     {
         $tokenVerifier = $this->getTokenVerifier();
         $accessToken = $this->connection->oauth(
             "oauth/access_token",
             ['oauth_token' => $tokenVerifier['token'] ,"oauth_verifier" => $tokenVerifier['verifier']]
         );
-        $this->session->set('access_token', $accessToken);
+
+        $user = $this->security->getUser();
+        $user->setApiToken($accessToken['oauth_token']);
+        $user->setApiVerifier($accessToken['oauth_token_secret']);
+        $this->em->flush();
     }
 
     public function getTokenVerifier()
@@ -50,10 +67,12 @@ class TwitterApi
         ];
     }
 
-    public function sendTweet(string $tweet)
+    /**
+     * Send a tweet to the account of a certain user
+     */
+    public function sendTweet(string $tweet, User $user)
     {
-        $access_token = $this->session->get('access_token');
-        $this->connection->setOauthToken($access_token['oauth_token'], $access_token['oauth_token_secret']);
+        $this->connection->setOauthToken($user->getApiToken(), $user->getApiVerifier());
         return $this->connection->post("statuses/update", ["status" => $tweet]);
     }
 }
